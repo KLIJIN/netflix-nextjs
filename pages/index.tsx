@@ -4,12 +4,15 @@ import axios from "axios";
 import Head from "next/head";
 import Banner from "../components/Banner";
 import Header from "../components/Header";
+import Modal from "../components/Modal";
 import requests from "../utils/requests";
 import { Movie } from "../typings";
 import { useEffect, useState } from "react";
 import Row from "../components/Row";
 import styles from "../styles/Home.module.css";
-
+import useAuthContext from "../hooks/useAuth";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalState, movieState } from "../atoms/modalAtom";
 
 interface HomeProps {
   netflixOriginals: Movie[];
@@ -32,6 +35,12 @@ const Home = () => {
   const [horrorMovies, setHorrorMovies] = useState<Movie[] | null>(null);
   const [romanceMovies, setHomanceMovies] = useState<Movie[] | null>(null);
   const [documentaries, setDocumentaries] = useState<Movie[] | null>(null);
+
+  const { loading } = useAuthContext();
+  // const [showModal, setShowModal] = useState<boolean>(false);
+  // const showModal = useRecoilValue(modalState);
+  const [showModal, setShowModal] = useRecoilState(modalState);
+  const movie = useRecoilValue(movieState);
 
   useEffect(() => {
     const getMovies = async () => {
@@ -68,6 +77,14 @@ const Home = () => {
     getMovies();
   }, []);
 
+  if (loading) {
+    return null;
+  }
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="relative h-screen bg-gradient-to-b from-gray-900/10 to-[#010511] lg:h-[140vh]">
       <Head>
@@ -89,6 +106,7 @@ const Home = () => {
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
+      {showModal && <Modal showModal={showModal} closeModal={closeModal} />}
     </div>
   );
 };

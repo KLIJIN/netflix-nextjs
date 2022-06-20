@@ -3,9 +3,11 @@ import { SearchIcon, BellIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import Image from "next/image";
 import account from "../public/account.png";
+import useAuthContext from "../hooks/useAuth";
 
 export default function Header() {
   const [isScrolled, setIsScroled] = useState(false);
+  const { logout } = useAuthContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +25,6 @@ export default function Header() {
     };
   }, []);
 
-  
   return (
     <header className={`${isScrolled ? "bg-[#131313]" : ""}`}>
       <div className="flex items-center space-x-2 md:space-x-10 lg:px-10 lg:py-6 ">
@@ -46,7 +47,7 @@ export default function Header() {
         <SearchIcon className="hidden w-6 h-6 sm:inline" />
         <p className="hidden lg:inline">Kids</p>
         <BellIcon className="w-6 h-6" />
-        <Link href="/account">
+        <button onClick={logout}>
           <Image
             src={account}
             className="cursor-pointer rounded"
@@ -54,7 +55,7 @@ export default function Header() {
             width={32}
             height={32}
           />
-        </Link>
+        </button>
       </div>
     </header>
   );
